@@ -1,3 +1,8 @@
+import urbanixImg from "../assets/images/urbanix.jpeg";
+import urbanix2Img from "../assets/images/urbanix2.jpeg";
+import fintellectImg from "../assets/images/fintellect.png";
+import petpalImg from "../assets/images/petpal.png";
+
 const projects = [
   {
     title: "URBANIX",
@@ -9,10 +14,7 @@ const projects = [
       "Implemented an AI chatbot to guide users through policy scenarios and outcome simulations.",
       "Built data visualisations (dashboards, radar charts) for district-level indicators and trade-offs.",
     ],
-    images: [
-      "src/assets/images/urbanix.jpeg",
-      "src/assets/images/urbanix2.jpeg",
-    ],
+    images: [urbanixImg, urbanix2Img],
   },
   {
     title: "FinTellect",
@@ -23,7 +25,7 @@ const projects = [
       "Built a Financial Time Machine simulator that modelled historical investment scenarios and visualised alternative portfolio outcomes.",
       "Developed financial simulations and predictive insights to help users evaluate future financial decisions and risks.",
     ],
-    images: ["src/assets/images/fintellect.png"],
+    images: [fintellectImg],
   },
   {
     title: "PetPal",
@@ -34,7 +36,7 @@ const projects = [
       "Analysed user behaviour and feature usage to identify adoption trends and derive insights.",
       "Defined functional requirements for key system features (authentication, ratings, interactive maps) and enacted implementation.",
     ],
-    images: ["src/assets/images/petpal.png"],
+    images: [petpalImg],
   },
 ];
 

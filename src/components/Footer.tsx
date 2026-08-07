@@ -36,11 +36,7 @@ export default function Footer() {
   return (
     <footer className="relative w-full overflow-hidden text-white min-h-[400px]" id="contact">
 
-        {/* Main Footer Container: middle column sizes to its own content
-           (auto) while the two side tracks are always equal (1fr each),
-           which mathematically centers the middle column regardless of
-           how wide the brand block or spacer end up being */}
-        <div className="relative bg-red-500/20">
+        <div className="relative">
 
   {/* Brand */}
   <div className="flex flex-col items-center lg:items-start">

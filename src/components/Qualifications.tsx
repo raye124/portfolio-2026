@@ -22,10 +22,10 @@ const experience: Item[] = [
     description: 'Internship',
     date: 'May 2026 – Present',
     highlights: [
-      'Engineered a Contract Lifecycle Management (CLM) workflow by orchestrating AI agents and tool integrations for end-to-end process automation.',
-      'Led stakeholder interviews to uncover process bottlenecks and translate business needs into improved workflows.',
-      'Developed a monitoring dashboard to track workflow performance and identify process bottlenecks, reducing LLM token costs by 30%.',
-      'Delivered a client-facing frontend application by integrating APIs and deploying the solution with Docker.',
+      'Engineered end-to-end workflows, integrating agentic AI for automated process orchestration.',
+      'Conducted market research and competitive analysis to identify enterprise use cases and inform architectural design of AI workflow systems.',
+      'Led stakeholder discovery interviews to surface pain points and translate findings into structured POC designs and pitch materials.',
+      'Maintained and restructured CMS content for government agency website, iterating on client feedback.'
     ],
   },
   {

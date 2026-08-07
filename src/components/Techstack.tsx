@@ -1,72 +1,43 @@
 import { motion } from "motion/react";
 
+import pythonImg from "../assets/images/python.png";
+import javascriptImg from "../assets/images/javascript.png";
+import reactImg from "../assets/images/react.png";
+import nodeImg from "../assets/images/node.png";
+import expressImg from "../assets/images/express.png";
+import phpImg from "../assets/images/php.png";
+import mysqlImg from "../assets/images/mysql.png";
+import postgresImg from "../assets/images/postgres.png";
+
+import viteImg from "../assets/images/vite.png";
+import vueImg from "../assets/images/vue.png";
+import dockerImg from "../assets/images/docker.png";
+import kubernetesImg from "../assets/images/kubernetes.png";
+import gitImg from "../assets/images/git.png";
+import pandasImg from "../assets/images/pandas.png";
+import htmlImg from "../assets/images/html.png";
+import cssImg from "../assets/images/css.png";
+
 const skills1 = [
-  {
-    title: "Python",
-    image: "src/assets/images/python.png",
-  },
-  {
-    title: "JavaScript",
-    image: "src/assets/images/javascript.png",
-  },
-  {
-    title: "React",
-    image: "src/assets/images/react.png",
-  },
-  {
-    title: "Node",
-    image: "src/assets/images/node.png",
-  },
-  {
-    title: "Express",
-    image: "src/assets/images/express.png",
-  },
-  {
-    title: "PHP",
-    image: "src/assets/images/php.png",
-  },
-  {
-    title: "MySQL",
-    image: "src/assets/images/mysql.png",
-  },
-  {
-    title: "PostgreSQL",
-    image: "src/assets/images/postgres.png",
-  }
+  { title: "Python", image: pythonImg },
+  { title: "JavaScript", image: javascriptImg },
+  { title: "React", image: reactImg },
+  { title: "Node", image: nodeImg },
+  { title: "Express", image: expressImg },
+  { title: "PHP", image: phpImg },
+  { title: "MySQL", image: mysqlImg },
+  { title: "PostgreSQL", image: postgresImg },
 ];
 
 const skills2 = [
-  {
-    title: "Vite",
-    image: "src/assets/images/vite.png",
-  },
-  {
-    title: "Vue",
-    image: "src/assets/images/vue.png",
-  },
-  {
-    title: "Docker",
-    image: "src/assets/images/docker.png",
-  },{
-    title: "Kubernetes",
-    image: "src/assets/images/kubernetes.png",
-  },
-  {
-    title: "Git",
-    image: "src/assets/images/git.png",
-  },
-  {
-    title: "Pandas",
-    image: "src/assets/images/pandas.png",
-  },
-  {
-    title: "HTML5",
-    image: "src/assets/images/html.png",
-  },
-  {
-    title: "CSS",
-    image: "src/assets/images/css.png",
-  }
+  { title: "Vite", image: viteImg },
+  { title: "Vue", image: vueImg },
+  { title: "Docker", image: dockerImg },
+  { title: "Kubernetes", image: kubernetesImg },
+  { title: "Git", image: gitImg },
+  { title: "Pandas", image: pandasImg },
+  { title: "HTML5", image: htmlImg },
+  { title: "CSS", image: cssImg },
 ];
 
 function Skills() {
