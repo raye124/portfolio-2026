@@ -111,7 +111,7 @@ useEffect(() => {
             <div className="hero-buttons">
 
                 <a
-                    href="src/assets/rayeyap_resume_NEW.pdf"
+                    href="src/assets/rayeyap_resume.pdf"
                     download
                     className="btn btn-resume"
                 >
