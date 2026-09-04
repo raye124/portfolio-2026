@@ -20,24 +20,33 @@ const experience: Item[] = [
     title: 'Business Analyst',
     subtitle: 'PebbleRoad',
     description: 'Internship',
-    date: 'May 2026 – Present',
+    date: 'May 2026 – Sept 2026',
     highlights: [
-      'Engineered end-to-end workflows, integrating agentic AI for automated process orchestration.',
-      'Conducted market research and competitive analysis to identify enterprise use cases and inform architectural design of AI workflow systems.',
-      'Led stakeholder discovery interviews to surface pain points and translate findings into structured POC designs and pitch materials.',
-      'Maintained and restructured CMS content for government agency website, iterating on client feedback.'
+      'Engineered a 0-to-1 pipeline for automated process orchestration, incorporating agentic AI, guardrails (ie. Human-in-the-Loop, Agent-as-a-Judge), and dashboards to track performance',
+      'Built 8+ data visualisations (ie. time series graphs, pie charts) and debugged code in React, TypeScript',
+      'Conducted competitive market research to identify enterprise use cases and inform system architecture decisions',
+      'Led stakeholder discovery interviews, translating raw pain points into POC designs and pitch materials',
+      'Managed CMS information architecture across 300+ files while aligning teams via Jira/Confluence and driving stakeholder delivery.'
+    ],
+  },
+  {
+    title: 'Teaching Assistant (IS211 Interaction Design & Prototyping)',
+    subtitle: 'Singapore Management University',
+    date: 'Aug 2026 – Present',
+    description: 'Under Prof Lee Min Hun',
+    highlights: [
+      'Mentoring and providing regular 1-1 consultations to 40+ students',
+      'Advising on requirements delivery, UI/UX fixes, product ideation, usability, A/B testing, etc.'
     ],
   },
   {
     title: 'Teaching Assistant',
     subtitle: 'Singapore Management University',
     date: 'Aug 2025 – Nov 2025',
-    description: 'Under Prof Serena Lim · Management Communication',
+    description: 'Under Prof Serena Lim',
     highlights: [
-      'Delivered structured, actionable feedback to 45 students.',
-      'Created instructional materials to improve engagement.',
-      'Analysed student feedback and refined lesson delivery.',
-      'Maintained digital learning platforms.',
+      'Delivered structured feedback to 40+ students to help them hone professional communication and presentation skills.',
+      'Partnered with professor to refine lesson materials via student feedback.'
     ],
   },
 ];
