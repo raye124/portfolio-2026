@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import urbanix1 from './assets/urbanix1.jpeg'
 import urbanix2 from './assets/urbanix2.jpeg'
 import urbanix3 from './assets/urbanix3.jpeg'
@@ -82,6 +82,9 @@ function caretAt(step: number) {
 }
 
 const QUILL_ANGLE = 32 // degrees, leaning right
+// DM Mono's character width is exactly 0.6em. Using the constant (rather than measuring at runtime)
+// keeps the editor from resizing when the web font finishes loading.
+const DM_MONO_CHAR_RATIO = 0.6
 
 // all scene geometry, in px, derived from the code font size —
 // which scales with both width and height so the hero (text + scene) fits one screen
@@ -108,13 +111,12 @@ function getLayout(w: number, h: number, charRatio: number) {
   const quillW = quillL * 0.25
   const topSpace = fs * 3 // room for the quill rising above the panel
   const frameH = Math.round(topSpace + panelH + fs)
-  // the editor is centred on the screen; the quill is free to overhang it
-  const panelX = (w - panelW) / 2
   const tipY = (line: number) => topSpace + header + padY + line * lh + lh * 0.78
-  const caretX = (col: number) => panelX + padX + gutter + col * cw
+  // x positions are measured from the editor's left edge (the editor itself is centred with CSS)
+  const caretX = (col: number) => padX + gutter + col * cw
   // where the quill rests between writing: nib tucked into the editor's bottom-right corner
-  const restX = panelX + panelW - fs * 1.5
-  return { restX, fs, lh, padX, header, padY, gutter, panelW, panelH, quillL, quillW, topSpace, frameH, panelX, tipY, caretX }
+  const restX = panelW - fs * 1.5
+  return { restX, fs, lh, padX, header, padY, gutter, panelW, panelH, quillL, quillW, topSpace, frameH, tipY, caretX }
 }
 
 /* ── bullet text: anything before the first colon is bolded as a label ── */
@@ -679,26 +681,27 @@ type Phase = 'idle' | 'writing' | 'done' | 'erasing'
 
 function HomePage() {
   const sceneRef = useRef<HTMLDivElement>(null)
-  const [viewport, setViewport] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
-  const [charRatio, setCharRatio] = useState(0.6)
+  // phone browsers can report a stale window.innerWidth while the page is loading,
+  // so size the scene from its own measured width instead
+  const [viewport, setViewport] = useState(() => ({ w: document.documentElement.clientWidth, h: window.innerHeight }))
   const [scene, setScene] = useState({ typed: 0, line: 0, col: 0, wobble: 0, lift: 0, rest: 1 })
 
-  // measure the real monospace advance so the nib lands exactly on the caret
-  useEffect(() => {
+  useLayoutEffect(() => {
     const measure = () => {
-      const ctx = document.createElement('canvas').getContext('2d')
-      if (!ctx) return
-      ctx.font = "100px 'DM Mono'"
-      setCharRatio(ctx.measureText('0000000000').width / 1000)
+      const w = sceneRef.current?.clientWidth || document.documentElement.clientWidth
+      const h = window.visualViewport?.height ?? window.innerHeight
+      setViewport(prev => (prev.w === w && prev.h === h ? prev : { w, h }))
     }
     measure()
-    document.fonts?.ready.then(measure)
-  }, [])
-
-  useEffect(() => {
-    const handleResize = () => setViewport({ w: window.innerWidth, h: window.innerHeight })
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    const observer = new ResizeObserver(measure)
+    if (sceneRef.current) observer.observe(sceneRef.current)
+    window.addEventListener('resize', measure)
+    window.addEventListener('orientationchange', measure)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', measure)
+      window.removeEventListener('orientationchange', measure)
+    }
   }, [])
 
   useEffect(() => {
@@ -830,7 +833,7 @@ function HomePage() {
   }
 }, [])
 
-  const L = getLayout(viewport.w, viewport.h, charRatio)
+  const L = getLayout(viewport.w, viewport.h, DM_MONO_CHAR_RATIO)
   const isDone = scene.typed === TOTAL_STEPS
   const caret = caretAt(scene.typed)
 
@@ -900,13 +903,15 @@ function HomePage() {
             @keyframes caret-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
           `}</style>
 
+          {/* stage: exactly the editor's width, centred by CSS so it can't start off-centre */}
           <div style={{
-            position: 'absolute', inset: 0,
+            position: 'absolute', top: 0, bottom: 0, left: '50%',
+            width: L.panelW, marginLeft: -L.panelW / 2,
             animation: isDone ? 'float 4s ease-in-out infinite' : 'none',
           }}>
             {/* code editor — tech */}
             <div style={{
-              position: 'absolute', left: L.panelX, top: L.topSpace,
+              position: 'absolute', left: 0, top: L.topSpace,
               width: L.panelW, height: L.panelH,
               border: '1px solid var(--color-line)', borderRadius: L.fs * 0.6,
               background: 'color-mix(in srgb, var(--color-surface) 4%, var(--color-canvas))',
@@ -934,7 +939,7 @@ function HomePage() {
                 {/* caret */}
                 <span style={{
                   position: 'absolute',
-                  left: L.caretX(caret.col) - L.panelX, top: L.padY + caret.line * L.lh + L.lh * 0.2,
+                  left: L.caretX(caret.col), top: L.padY + caret.line * L.lh + L.lh * 0.2,
                   width: 2, height: L.lh * 0.6, background: 'var(--color-sage)',
                   animation: scene.rest < 0.05 && !isDone ? 'none' : 'caret-blink 1.06s step-end infinite',
                 }} />
