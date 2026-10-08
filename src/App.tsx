@@ -3,6 +3,7 @@ import urbanix1 from './assets/urbanix1.jpeg'
 import urbanix2 from './assets/urbanix2.jpeg'
 import urbanix3 from './assets/urbanix3.jpeg'
 import urbanix4 from './assets/urbanix.jpeg'
+import gazom from './assets/gazom.png'
 
 function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
@@ -136,8 +137,14 @@ const NAV_ITEMS = [
 
 type PagePath = '/' | '/work' | '/writing' | '/about'
 
+// the folder the site is served from: '' locally, '/portfolio-2026' on GitHub Pages (set by vite's `base`)
+const BASE = import.meta.env.BASE_URL.replace(/\/+$/, '')
+const toUrl = (path: string) => (BASE + path).replace(/\/+$/, '') || '/'
+
 function getPagePath(): PagePath {
-  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  let path = window.location.pathname
+  if (BASE && path.startsWith(BASE)) path = path.slice(BASE.length)
+  path = path.replace(/\/+$/, '') || '/'
   return NAV_ITEMS.some(item => item.path === path) ? path as PagePath : '/'
 }
 
@@ -154,7 +161,7 @@ function SiteHeader({
     <>
       <nav className="relative z-50 flex items-center justify-between px-6 pt-7 sm:px-10 md:px-14">
         <a
-          href="/"
+          href={toUrl('/')}
           onClick={event => {
             event.preventDefault()
             onNavigate('/')
@@ -167,7 +174,7 @@ function SiteHeader({
           {NAV_ITEMS.map(item => (
             <a
               key={item.path}
-              href={item.path}
+              href={toUrl(item.path)}
               onClick={event => {
                 event.preventDefault()
                 onNavigate(item.path as PagePath)
@@ -204,7 +211,7 @@ function SiteHeader({
           {NAV_ITEMS.map((item, i) => (
             <a
               key={item.path}
-              href={item.path}
+              href={toUrl(item.path)}
               onClick={event => {
                 event.preventDefault()
                 setMenuOpen(false)
@@ -412,7 +419,7 @@ function WorkPage() {
       outcome: 'The website was successfully launched and is now live, helping the business reach a wider audience and attract visitors.',
       tone: 'bg-[var(--color-mauve-light)]',
       // carousel images: drop files in public/projects/ and list them, e.g. ['/projects/urbanix-1.png', '/projects/urbanix-2.png']
-      images: ['src/assets/gazom.png'] as string[],
+      images: [gazom],
     },
   ]
   const stack: StackItem[] = [
@@ -976,7 +983,7 @@ export default function App() {
 
   const navigate = (nextPath: PagePath) => {
     if (nextPath !== path) {
-      window.history.pushState({}, '', nextPath)
+      window.history.pushState({}, '', toUrl(nextPath))
       setPath(nextPath)
     }
     setMenuOpen(false)
