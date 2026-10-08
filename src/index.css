@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+  --font-handwriting: 'Caveat', cursive;
+
+  --color-canvas: #181A15;
+  --color-canvas-warm: #E0E7D7;
+  --color-surface: #FEFEFE;
+  --color-ink: #EDECEC;
+  --color-ink-muted: #8A8E82;
+  --color-sage: #7A9A5A;
+  --color-sage-light: #B7C396;
+  --color-sage-pale: #E0E7D7;
+  --color-mauve: #9E7B73;
+  --color-mauve-light: #BA9A91;
+  --color-gray-mid: #CCCCCC;
+  --color-dark-ink: #181A15;
+  --color-line: color-mix(in srgb, #EDECEC 15%, transparent);
+  --color-dark-line: color-mix(in srgb, #181A15 22%, transparent);
+  --color-panel: color-mix(in srgb, #FEFEFE 3%, transparent);
+  --color-light-panel: color-mix(in srgb, #FEFEFE 18%, transparent);
+}
+
+html {
+  background-color: var(--color-canvas);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+::selection {
+  background: var(--color-sage-light);
+  color: var(--color-dark-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
