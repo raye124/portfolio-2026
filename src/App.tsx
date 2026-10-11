@@ -374,8 +374,8 @@ function WorkPage() {
       company: 'PebbleRoad',
       location: 'Singapore',
       contributions: [
-        'Designed and built a 0-to-1 automation pipeline with agentic AI, human-in-the-loop guardrails, and rules-based risk scoring DMN logic to flag high-risk transactions (solution adopted by the team after internship end).',
-        'Conducted competitive research across 10+ companies and synthesised findings into a comparison matrix for internal leadership review.',
+        'Engineered a 0-to-1 automation pipeline with agentic AI, Human-in-the-Loop and Agent-as-a-Judge guardrails, with dashboards to monitor performance.',
+        'Led stakeholder discovery and competitive research across 10+ companies, translating pain points into POC designs and pitch decks.',
         'Reorganised CMS information architecture across 300+ files, aligning teams via Jira, Confluence and Slack to keep project milestones on track.'
       ],
     },
