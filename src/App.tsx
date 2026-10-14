@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import urbanix1 from './assets/urbanix1.jpeg'
 import urbanix2 from './assets/urbanix2.jpeg'
 import urbanix3 from './assets/urbanix3.jpeg'
@@ -248,12 +248,19 @@ function SiteFooter() {
   )
 }
 
-function PageIntro({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
+function PageIntro({ eyebrow, title, copy, art }: { eyebrow: string; title: string; copy: string; art?: ReactNode }) {
   return (
     <header className="mx-auto flex min-h-[58svh] max-w-6xl flex-col justify-end px-6 pb-16 pt-20 md:min-h-[72vh] md:pt-24 sm:px-10 md:px-14 md:pb-28 lg:min-h-[56vh] lg:pb-20">
-      <p className="mb-6 font-mono text-[0.75rem] uppercase tracking-[0.2em] text-[var(--color-sage-light)]">{eyebrow}</p>
-      <h1 className="max-w-5xl font-display text-[clamp(3.5rem,10vw,8.5rem)] font-normal leading-[0.92] lg:text-[clamp(4rem,6.5vw,6.5rem)] tracking-[-0.04em] text-[var(--color-ink)]">{title}</h1>
-      <p className="mt-8 max-w-md text-sm leading-7 text-[var(--color-ink-muted)] sm:text-base">{copy}</p>
+      {/* optional illustration: beside the heading from tablet up, centred under the eyebrow on phones */}
+      <div className={art ? 'md:grid md:grid-cols-[1fr_auto] md:items-end md:gap-10' : undefined}>
+        <div>
+          <p className="mb-6 font-mono text-[0.75rem] uppercase tracking-[0.2em] text-[var(--color-sage-light)]">{eyebrow}</p>
+          {art && <div className="mx-auto mb-10 mt-4 w-full max-w-[240px] px-2 sm:max-w-[280px] md:hidden">{art}</div>}
+          <h1 className="max-w-5xl font-display text-[clamp(3.5rem,10vw,8.5rem)] font-normal leading-[0.92] lg:text-[clamp(4rem,6.5vw,6.5rem)] tracking-[-0.04em] text-[var(--color-ink)]">{title}</h1>
+          <p className="mt-8 max-w-md text-sm leading-7 text-[var(--color-ink-muted)] sm:text-base">{copy}</p>
+        </div>
+        {art && <div className="hidden w-[clamp(200px,26vw,340px)] pb-4 md:block">{art}</div>}
+      </div>
     </header>
   )
 }
@@ -366,6 +373,77 @@ type Project = {
   images: string[]
 }
 
+/* ── Briefcase with code and prose papers peeking out, and a swinging </> tag (Work page) ── */
+function Briefcase() {
+  const outline = 'var(--color-mauve-light)'
+  const fill = 'color-mix(in srgb, var(--color-surface) 4%, var(--color-canvas))'
+  const paperFill = 'color-mix(in srgb, var(--color-surface) 9%, var(--color-canvas))'
+  const accent = 'var(--color-sage)'
+  // short bars standing in for lines of code (coloured) and prose (plain)
+  const codeLines: [number, number, string][] = [[0, 26, 'var(--color-mauve-light)'], [8, 34, 'var(--color-sage-light)'], [8, 22, 'var(--color-ink)'], [0, 30, 'var(--color-sage-light)'], [8, 18, 'var(--color-ink)']]
+  const proseLines = [64, 70, 58, 66, 40]
+  return (
+    <svg viewBox="0 0 320 250" fill="none" xmlns="http://www.w3.org/2000/svg"
+      role="img" aria-label="A briefcase with papers of code and writing peeking out"
+      style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+      <style>{`
+        @keyframes briefcase-paper { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+        @keyframes briefcase-tag { 0%, 100% { transform: rotate(-8deg) } 50% { transform: rotate(8deg) } }
+      `}</style>
+
+      {/* papers peeking out of the top: one written in code, one in prose */}
+      <g style={{ animation: 'briefcase-paper 4s ease-in-out infinite' }}>
+        <g transform="translate(62,34) rotate(-7)">
+          <rect width="96" height="90" rx="2" fill={paperFill} stroke="var(--color-ink-muted)" strokeWidth="1.1" />
+          {codeLines.map(([indent, w, color], i) => (
+            <rect key={i} x={12 + indent} y={14 + i * 11} width={w} height="3.4" rx="1.7" fill={color} fillOpacity={color === 'var(--color-ink)' ? 0.7 : 0.9} />
+          ))}
+        </g>
+      </g>
+      <g style={{ animation: 'briefcase-paper 4s ease-in-out -2s infinite' }}>
+        <g transform="translate(160,30) rotate(6)">
+          <rect width="96" height="90" rx="2" fill={paperFill} stroke="var(--color-ink-muted)" strokeWidth="1.1" />
+          {proseLines.map((w, i) => (
+            <rect key={i} x="12" y={14 + i * 11} width={w} height="3" rx="1.5" fill="var(--color-ink-muted)" fillOpacity="0.8" />
+          ))}
+        </g>
+      </g>
+
+      {/* handle */}
+      <path d="M122,98 L122,72 Q122,58 136,58 L184,58 Q198,58 198,72 L198,98" stroke={outline} strokeWidth="1.5" fill="none" />
+      <path d="M131,98 L131,74 Q131,67 138,67 L182,67 Q189,67 189,74 L189,98" stroke={outline} strokeWidth="1.1" strokeOpacity="0.6" fill="none" />
+
+      {/* body and lid */}
+      <rect x="28" y="96" width="264" height="134" rx="14" fill={fill} stroke={outline} strokeWidth="1.5" />
+      <path d="M28,132 L292,132" stroke={outline} strokeWidth="1.2" />
+      <rect x="37" y="105" width="246" height="116" rx="9" stroke={accent} strokeWidth="0.9" strokeOpacity="0.45" strokeDasharray="4 4" />
+      {/* corner guards */}
+      {[[28, 214, 1], [292, 214, -1]].map(([x, y, d]) => (
+        <path key={x} d={`M${x},${y} L${x},${y + 2} Q${x},${y + 16} ${x + d * 14},${y + 16} L${x + d * 16},${y + 16}`} stroke={outline} strokeWidth="2.4" strokeLinecap="round" />
+      ))}
+      {/* latches */}
+      {[84, 216].map(x => (
+        <g key={x}>
+          <rect x={x - 11} y="122" width="22" height="20" rx="3" fill={accent} fillOpacity="0.35" stroke={accent} strokeWidth="1.2" />
+          <rect x={x - 4} y="127" width="8" height="8" rx="1.5" stroke={accent} strokeWidth="1" />
+        </g>
+      ))}
+      {/* feet */}
+      {[70, 250].map(x => <rect key={x} x={x - 9} y="230" width="18" height="5" rx="2" fill={outline} fillOpacity="0.5" />)}
+
+      {/* luggage tag swinging from the handle */}
+      <g style={{ transformBox: 'view-box', transformOrigin: '194px 76px', animation: 'briefcase-tag 3.4s ease-in-out infinite' }}>
+        <path d="M194,76 Q204,92 212,108" stroke="var(--color-ink-muted)" strokeWidth="1" />
+        <g transform="translate(212,108) rotate(-14)">
+          <path d="M0,-6 L10,-14 L44,-14 L44,14 L10,14 Z" fill={fill} stroke={outline} strokeWidth="1.2" strokeLinejoin="round" />
+          <circle cx="7" cy="0" r="2.2" stroke={outline} strokeWidth="1" />
+          <text x="28" y="4" textAnchor="middle" fontFamily="'DM Mono', monospace" fontSize="10" fill="var(--color-sage-light)">{'</>'}</text>
+        </g>
+      </g>
+    </svg>
+  )
+}
+
 function WorkPage() {
   const experience = [
     {
@@ -453,7 +531,7 @@ function WorkPage() {
 
   return (
     <main>
-      <PageIntro eyebrow="01 · Experience" title="Work across domains." copy="My growing library of industry experience, shaped by the many wonderful folks I've collaborated with." />
+      <PageIntro eyebrow="01 · Experience" title="Work across domains." copy="My growing library of industry experience, shaped by the many wonderful folks I've collaborated with." art={<Briefcase />} />
 
       <section className="border-b border-[color:var(--color-line)] px-6 pb-20 sm:px-10 md:px-14 md:pb-28">
         <div className="mx-auto max-w-6xl">
@@ -566,6 +644,312 @@ function WorkPage() {
   )
 }
 
+/* ── Open book standing upright, its lines written in code (About page) ── */
+// each line: [indent, ...segments] where a segment is [length, colour]; lengths are in "characters"
+const BOOK_LEFT: [number, ...[number, string][]][] = [
+  [0, [5, 'var(--color-mauve-light)'], [6, 'var(--color-ink)'], [2, 'var(--color-ink-muted)'], [7, 'var(--color-sage-light)']],
+  [1, [4, 'var(--color-ink)'], [1, 'var(--color-ink-muted)'], [9, 'var(--color-sage-light)'], [2, 'var(--color-ink-muted)']],
+  [1, [5, 'var(--color-mauve-light)'], [7, 'var(--color-ink)']],
+  [0],
+  [0, [6, 'var(--color-mauve-light)'], [8, 'var(--color-sage-light)'], [3, 'var(--color-ink-muted)']],
+  [1, [6, 'var(--color-ink)'], [2, 'var(--color-sage)'], [5, 'var(--color-ink)']],
+  [2, [7, 'var(--color-sage-light)'], [1, 'var(--color-ink-muted)'], [8, 'var(--color-ink)']],
+  [1, [1, 'var(--color-ink-muted)']],
+  [0],
+  [0, [15, 'var(--color-ink-muted)']],
+  [0, [4, 'var(--color-mauve-light)'], [5, 'var(--color-ink)'], [6, 'var(--color-sage-light)']],
+]
+const BOOK_RIGHT: [number, ...[number, string][]][] = [
+  [0, [14, 'var(--color-ink-muted)']],
+  [0, [5, 'var(--color-mauve-light)'], [4, 'var(--color-ink)'], [1, 'var(--color-ink-muted)'], [6, 'var(--color-sage-light)']],
+  [1, [3, 'var(--color-mauve-light)'], [6, 'var(--color-ink)'], [2, 'var(--color-sage)'], [4, 'var(--color-ink)']],
+  [2, [8, 'var(--color-sage-light)'], [9, 'var(--color-ink)']],
+  [1, [1, 'var(--color-ink-muted)']],
+  [0],
+  [0, [6, 'var(--color-mauve-light)'], [5, 'var(--color-ink)'], [2, 'var(--color-ink-muted)']],
+  [1, [7, 'var(--color-sage-light)'], [1, 'var(--color-ink-muted)'], [6, 'var(--color-ink)'], [1, 'var(--color-ink-muted)']],
+  [1, [5, 'var(--color-ink)'], [2, 'var(--color-sage)'], [8, 'var(--color-ink)']],
+  [0],
+  [0, [6, 'var(--color-sage-light)'], [9, 'var(--color-ink)'], [2, 'var(--color-ink-muted)']],
+]
+
+/* ── line-art cog wheel, drawn around (0,0), spinning in place ── */
+function Cog({ x, y, r, teeth, color, period, reverse = false, opacity = 0.6, phase = 0 }: {
+  x: number; y: number; r: number; teeth: number; color: string; period: number; reverse?: boolean; opacity?: number
+  phase?: number // starting rotation in degrees, so meshed cogs line up tooth-to-gap
+}) {
+  const root = r - Math.max(3, r * 0.16) // tooth depth
+  const step = (Math.PI * 2) / teeth
+  const points: string[] = []
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step
+    // trapezoid tooth: wide at the root, narrower at the tip
+    for (const [rad, da] of [[root, -0.3], [r, -0.17], [r, 0.17], [root, 0.3]] as const) {
+      points.push(`${(Math.cos(a + da * step) * rad).toFixed(2)},${(Math.sin(a + da * step) * rad).toFixed(2)}`)
+    }
+  }
+  const ring = root * 0.62
+  const hub = Math.max(2.5, r * 0.18)
+  return (
+    <g transform={`translate(${x},${y}) rotate(${phase})`} opacity={opacity}>
+      <g style={{ transformBox: 'fill-box', transformOrigin: 'center', animation: `${reverse ? 'cog-ccw' : 'cog-cw'} ${period}s linear infinite` }}>
+        <polygon points={points.join(' ')} stroke={color} strokeWidth="1.2" strokeLinejoin="round" fill="var(--color-canvas)" />
+        <circle r={ring} stroke={color} strokeWidth="0.9" />
+        <circle r={hub} stroke={color} strokeWidth="1" />
+        {Array.from({ length: 5 }, (_, i) => {
+          const a = (i / 5) * Math.PI * 2
+          return <line key={i} x1={Math.cos(a) * hub} y1={Math.sin(a) * hub} x2={Math.cos(a) * ring} y2={Math.sin(a) * ring} stroke={color} strokeWidth="0.8" />
+        })}
+      </g>
+    </g>
+  )
+}
+
+function CodeBook() {
+  const ref = useRef<SVGSVGElement>(null)
+  const [shown, setShown] = useState(false)
+
+  // write the lines in once the book scrolls into view
+  useEffect(() => {
+    if (!ref.current) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setShown(true); observer.disconnect() }
+    }, { threshold: 0.4 })
+    observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+
+  const outline = 'var(--color-mauve-light)'
+  const pageFill = 'color-mix(in srgb, var(--color-surface) 4%, var(--color-canvas))'
+  const unit = 4.1 // px per "character"
+  const lineGap = 13.5
+
+  // page-local coordinates: 122 wide × 180 tall, then skewed so the pages open towards the viewer
+  const renderLines = (lines: typeof BOOK_LEFT, delayOffset: number) =>
+    lines.map(([indent, ...segments], row) => {
+      let x = 12 + indent * unit * 2
+      return segments.map(([len, color], i) => {
+        const w = len * unit
+        const bar = (
+          <rect
+            key={`${row}-${i}`}
+            x={x} y={24 + row * lineGap} width={w} height={3.4} rx={1.7}
+            fill={color} fillOpacity={color === 'var(--color-ink)' ? 0.75 : 0.9}
+            style={{
+              transformBox: 'fill-box', transformOrigin: 'left center',
+              transform: shown ? 'scaleX(1)' : 'scaleX(0)',
+              transition: `transform 0.35s ease-out ${delayOffset + row * 0.09 + i * 0.05}s`,
+            }}
+          />
+        )
+        x += w + unit
+        return bar
+      })
+    })
+
+  return (
+    <svg ref={ref} viewBox="0 0 320 262" fill="none" xmlns="http://www.w3.org/2000/svg"
+      role="img" aria-label="An open book whose lines are written in code"
+      style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+      <style>{`
+        @keyframes cog-cw { to { transform: rotate(360deg) } }
+        @keyframes cog-ccw { to { transform: rotate(-360deg) } }
+      `}</style>
+      {/* cogs behind the book; the meshed pair turns in opposite directions at speeds set by their tooth ratio */}
+      <Cog x={30} y={26} r={30} teeth={12} color="var(--color-sage)" period={24} />
+      <Cog x={18} y={236} r={16} teeth={8} color="var(--color-mauve-light)" period={14} reverse opacity={0.5} />
+      {/* meshed pair: centres one pitch-radius apart, phased so a tooth of the small cog sits in a gap of the large one */}
+      <Cog x={294} y={222} r={24} teeth={10} color="var(--color-mauve-light)" period={16} phase={-80.2} />
+      <Cog x={310.2} y={191.4} r={14} teeth={6} color="var(--color-sage)" period={16 * 6 / 10} reverse phase={117.8} />
+      {/* cover, peeking out behind the pages */}
+      <path d="M160,40 L26,20 L26,222 L160,240 L294,222 L294,20 Z" stroke="var(--color-sage)" strokeWidth="1.2" strokeOpacity="0.7" strokeLinejoin="round" />
+      {/* page edges stacked under each page */}
+      {[6, 3].map(o => (
+        <g key={o} stroke={outline} strokeWidth="0.8" strokeOpacity={0.35 + (6 - o) * 0.08} fill={pageFill}>
+          <path d={`M160,${46 + o} L${36 - o},${30 + o} L${36 - o},${210 + o} L160,${226 + o} Z`} />
+          <path d={`M160,${46 + o} L${284 + o},${30 + o} L${284 + o},${210 + o} L160,${226 + o} Z`} />
+        </g>
+      ))}
+
+      {/* left page */}
+      <path d="M158,46 L36,30 L36,210 L158,226 Z" fill={pageFill} stroke={outline} strokeWidth="1.4" strokeLinejoin="round" />
+      <g transform="translate(36,30) skewY(7.47)">
+        <rect x="12" y="10" width="34" height="4" rx="2" fill="var(--color-mauve-light)" fillOpacity="0.55" />
+        {renderLines(BOOK_LEFT, 0)}
+        <text x="61" y="172" textAnchor="middle" fontFamily="'DM Mono', monospace" fontSize="7" fill="var(--color-ink-muted)" fillOpacity="0.7">12</text>
+      </g>
+
+      {/* right page */}
+      <path d="M162,46 L284,30 L284,210 L162,226 Z" fill={pageFill} stroke={outline} strokeWidth="1.4" strokeLinejoin="round" />
+      <g transform="translate(162,46) skewY(-7.47)">
+        {renderLines(BOOK_RIGHT, BOOK_LEFT.length * 0.09)}
+        <text x="61" y="172" textAnchor="middle" fontFamily="'DM Mono', monospace" fontSize="7" fill="var(--color-ink-muted)" fillOpacity="0.7">13</text>
+      </g>
+
+      {/* spine shadow and fold */}
+      <path d="M152,45 L168,45 L168,227 L152,227 Z" fill="url(#book-gutter)" />
+      <path d="M160,44 L160,228" stroke={outline} strokeWidth="1.4" strokeLinecap="round" />
+      {/* ribbon bookmark */}
+      <path d="M163,46 L163,250 L167.5,244 L172,250 L172,47" stroke="var(--color-sage)" strokeWidth="1.2" strokeLinejoin="round" fill="var(--color-sage)" fillOpacity="0.25" />
+      <defs>
+        <linearGradient id="book-gutter" x1="0" x2="1">
+          <stop offset="0" stopColor="#000" stopOpacity="0" />
+          <stop offset="0.5" stopColor="#000" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#000" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+/* ── Graduation cap with a swinging tassel and a rolled diploma (education section) ── */
+function GradCap() {
+  const outline = 'var(--color-mauve-light)'
+  const fill = 'color-mix(in srgb, var(--color-surface) 4%, var(--color-canvas))'
+  const tassel = 'var(--color-sage)'
+  return (
+    <svg viewBox="0 0 300 240" fill="none" xmlns="http://www.w3.org/2000/svg"
+      role="img" aria-label="A graduation cap and a rolled diploma"
+      style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+      <style>{`
+        @keyframes gradcap-swing { 0%, 100% { transform: rotate(-7deg) } 50% { transform: rotate(7deg) } }
+        @keyframes gradcap-twinkle { 0%, 100% { opacity: 0.25 } 50% { opacity: 0.9 } }
+      `}</style>
+
+      {/* sparkles */}
+      {[[38, 36, 7, 0], [266, 22, 5, 1.2], [288, 150, 6, 0.6], [22, 140, 4, 1.8]].map(([x, y, r, delay]) => (
+        <path key={`${x}-${y}`}
+          d={`M${x},${y - r} Q${x},${y} ${x + r},${y} Q${x},${y} ${x},${y + r} Q${x},${y} ${x - r},${y} Q${x},${y} ${x},${y - r} Z`}
+          fill="var(--color-sage-light)"
+          style={{ animation: `gradcap-twinkle 3s ease-in-out ${delay}s infinite` }} />
+      ))}
+
+      {/* rolled diploma, tied with a ribbon */}
+      <g transform="translate(92,198) rotate(-10)">
+        <rect x="-62" y="-11" width="124" height="22" rx="3" fill={fill} stroke="var(--color-ink-muted)" strokeWidth="1.3" />
+        <ellipse cx="62" cy="0" rx="4.5" ry="11" fill={fill} stroke="var(--color-ink-muted)" strokeWidth="1.3" />
+        <path d="M62,-4 a2,4 0 1 0 0.1,0" stroke="var(--color-ink-muted)" strokeWidth="0.9" />
+        {[-44, -30, 22, 36].map(x => <line key={x} x1={x} y1="-4" x2={x + 8} y2="-4" stroke="var(--color-ink-muted)" strokeOpacity="0.5" strokeWidth="1.2" strokeLinecap="round" />)}
+        <rect x="-6" y="-11.5" width="10" height="23" fill={tassel} fillOpacity="0.55" stroke={tassel} strokeWidth="1" />
+        <path d="M-1,11 L-9,28 M-1,11 L7,27" stroke={tassel} strokeWidth="2" strokeLinecap="round" />
+      </g>
+
+      {/* skull of the cap, under the board */}
+      <path d="M88,104 L91,158 Q150,184 209,158 L212,104" fill={fill} stroke={outline} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M91,148 Q150,172 209,148" stroke={outline} strokeWidth="0.9" strokeOpacity="0.5" />
+
+      {/* board: thickness first, then the top face */}
+      <path d="M30,84 L30,91 L150,137 L270,91 L270,84" fill={fill} stroke={outline} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M150,38 L270,84 L150,130 L30,84 Z" fill={fill} stroke={outline} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M150,48 L246,84 L150,120 L54,84 Z" stroke={outline} strokeWidth="0.7" strokeOpacity="0.35" />
+
+      {/* tassel: cord over the board, then a hanging part that swings from the board's edge */}
+      <path d="M150,84 Q205,82 250,89" stroke={tassel} strokeWidth="1.6" strokeLinecap="round" />
+      <g style={{ transformBox: 'view-box', transformOrigin: '251px 90px', animation: 'gradcap-swing 3.2s ease-in-out infinite' }}>
+        <path d="M251,90 L251,142" stroke={tassel} strokeWidth="1.6" strokeLinecap="round" />
+        <rect x="246.5" y="140" width="9" height="7" rx="2" fill={tassel} fillOpacity="0.5" stroke={tassel} strokeWidth="1.2" />
+        <path d="M247,147 L243,176 L259,176 L255,147 Z" fill={tassel} fillOpacity="0.3" stroke={tassel} strokeWidth="1.2" strokeLinejoin="round" />
+        {[246.5, 249.5, 252.5, 255.5].map(x => <line key={x} x1={x} y1="150" x2={x + (x - 251) * 0.6} y2="174" stroke={tassel} strokeWidth="0.7" strokeOpacity="0.7" />)}
+      </g>
+      <circle cx="150" cy="84" r="5" fill={tassel} fillOpacity="0.5" stroke={tassel} strokeWidth="1.3" />
+    </svg>
+  )
+}
+
+/* ── Half human, half robot face (About page intro) ── */
+function HalfFace() {
+  const human = 'var(--color-mauve-light)'
+  const robot = 'var(--color-sage)'
+  const fill = 'color-mix(in srgb, var(--color-surface) 4%, var(--color-canvas))'
+  const hair = '#0b0c09' // darker than the page so it reads as dark hair
+  return (
+    <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+      role="img" aria-label="A face that is half human and half robot"
+      style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+      <style>{`
+        @keyframes face-blink { 0%, 90%, 100% { transform: scaleY(1) } 94% { transform: scaleY(0.08) } }
+        @keyframes face-glow { 0%, 100% { opacity: 0.55 } 50% { opacity: 1 } }
+        @keyframes face-scan { 0%, 100% { transform: translateX(0) } 50% { transform: translateX(30px) } }
+        @keyframes face-signal { to { stroke-dashoffset: -24 } }
+        @keyframes face-antenna { 0%, 60%, 100% { opacity: 0.3 } 70%, 90% { opacity: 1 } }
+      `}</style>
+
+      {/* long straight dark hair, falling behind the face past the shoulders */}
+      <path d="M150,28 C118,26 86,36 70,64 C62,80 60,100 60,124 L58,292 L150,292 Z" fill={hair} stroke={human} strokeWidth="1.4" strokeLinejoin="round" />
+      {[66, 72, 78].map(x => <line key={x} x1={x} y1={120} x2={x - 1} y2={288} stroke={human} strokeWidth="0.8" strokeOpacity="0.35" />)}
+      <path d="M92,290 L92,262 M104,290 L104,266" stroke={human} strokeWidth="0.8" strokeOpacity="0.35" />
+
+      {/* ── head: soft human curve on the left, angular plate on the right ── */}
+      <path d="M150,40 C112,40 84,64 80,104 C76,136 78,170 86,200 C96,236 122,258 150,262 Z" fill={fill} stroke={human} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M150,40 L208,46 L230,88 L230,192 L210,238 L150,262 Z" fill={fill} stroke={robot} strokeWidth="1.5" strokeLinejoin="round" />
+
+      {/* ── human half ── */}
+      {/* straight-cut bangs over the forehead */}
+      <path d="M150,34 C120,32 92,42 78,68 C74,80 74,94 76,108 L150,106 Z" fill={hair} stroke={human} strokeWidth="1.4" strokeLinejoin="round" />
+      {[90, 102, 114, 126, 138].map(x => <line key={x} x1={x} y1={x < 100 ? 66 : 50} x2={x - 1} y2={106} stroke={human} strokeWidth="0.8" strokeOpacity="0.35" />)}
+      {/* a soft sheen on the crown */}
+      <path d="M104,48 C116,42 132,40 146,40" stroke={human} strokeWidth="2" strokeOpacity="0.3" strokeLinecap="round" />
+      {/* brow, eye (blinks), lashes */}
+      <path d="M100,118 Q120,108 140,114" stroke={human} strokeWidth="1.6" strokeLinecap="round" />
+      <g style={{ transformBox: 'fill-box', transformOrigin: 'center', animation: 'face-blink 5s ease-in-out infinite' }}>
+        <path d="M100,140 Q120,126 140,140 Q120,153 100,140 Z" fill="var(--color-canvas)" stroke={human} strokeWidth="1.3" />
+        <circle cx="121" cy="140" r="6.5" stroke={human} strokeWidth="1.1" />
+        <circle cx="121" cy="140" r="2.6" fill={human} />
+      </g>
+      {[[102, 137, 97, 132], [108, 133, 104, 127], [115, 131, 113, 125]].map(([x1, y1, x2, y2]) => (
+        <line key={x1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={human} strokeWidth="1" strokeLinecap="round" />
+      ))}
+      {/* nose, cheek, lips */}
+      <path d="M146,146 C144,164 138,178 136,186 C138,192 144,194 150,193" stroke={human} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="112" cy="182" r="11" fill={human} fillOpacity="0.12" />
+      <path d="M118,222 Q130,214 140,216 Q146,214 150,217" stroke={human} strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M118,222 Q134,234 150,233" stroke={human} strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M118,222 L150,224" stroke={human} strokeWidth="0.9" strokeOpacity="0.6" />
+
+      {/* ── robot half ── */}
+      {/* antenna with a blinking light */}
+      <path d="M190,44 L200,14" stroke={robot} strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="201" cy="11" r="5" fill="var(--color-sage-light)" style={{ animation: 'face-antenna 2.4s ease-in-out infinite' }} />
+      {/* panel seams and bolts */}
+      <path d="M176,66 L224,92" stroke={robot} strokeWidth="0.9" strokeOpacity="0.6" />
+      <path d="M200,210 L228,196" stroke={robot} strokeWidth="0.9" strokeOpacity="0.6" />
+      {[[168, 58], [220, 74], [222, 214], [170, 248]].map(([x, y]) => (
+        <g key={`${x}-${y}`}>
+          <circle cx={x} cy={y} r="3.6" stroke={robot} strokeWidth="1" />
+          <path d={`M${x - 2},${y} L${x + 2},${y} M${x},${y - 2} L${x},${y + 2}`} stroke={robot} strokeWidth="0.8" />
+        </g>
+      ))}
+      {/* brow plate and eye: glowing light with a sweeping scan line */}
+      <path d="M160,112 L202,118" stroke={robot} strokeWidth="2" strokeLinecap="round" />
+      <rect x="160" y="127" width="42" height="26" rx="5" fill="var(--color-canvas)" stroke={robot} strokeWidth="1.3" />
+      <circle cx="181" cy="140" r="7.5" fill="var(--color-sage-light)" style={{ animation: 'face-glow 2.2s ease-in-out infinite' }} />
+      <circle cx="181" cy="140" r="2.6" fill="var(--color-canvas)" />
+      <line x1="166" y1="129" x2="166" y2="151" stroke="var(--color-sage-light)" strokeWidth="1.2" strokeOpacity="0.7"
+        style={{ animation: 'face-scan 3s ease-in-out infinite' }} />
+      {/* ear module with vents */}
+      <rect x="230" y="128" width="16" height="54" rx="3" fill={fill} stroke={robot} strokeWidth="1.3" />
+      {[138, 146, 154, 162, 170].map(y => <line key={y} x1="234" y1={y} x2="242" y2={y} stroke={robot} strokeWidth="0.9" strokeOpacity="0.7" />)}
+      {/* angular nose */}
+      <path d="M154,146 L164,184 L150,193" stroke={robot} strokeWidth="1.3" strokeLinejoin="round" />
+      {/* grille mouth */}
+      <rect x="150" y="214" width="42" height="20" rx="3" fill="var(--color-canvas)" stroke={robot} strokeWidth="1.3" />
+      {[158, 166, 174, 182].map(x => <line key={x} x1={x} y1="217" x2={x} y2="231" stroke={robot} strokeWidth="0.9" />)}
+      {/* circuit traces with signals flowing along them */}
+      {['M152,88 L172,88 L182,98 L206,98', 'M206,160 L218,160 L218,186', 'M152,204 L178,204 L186,196 L204,196'].map(d => (
+        <g key={d}>
+          <path d={d} stroke={robot} strokeWidth="0.9" strokeOpacity="0.5" strokeLinejoin="round" />
+          <path d={d} stroke="var(--color-sage-light)" strokeWidth="1.2" strokeDasharray="4 20" strokeLinecap="round" strokeLinejoin="round"
+            style={{ animation: 'face-signal 1.6s linear infinite' }} />
+        </g>
+      ))}
+      {[[206, 98], [218, 186], [204, 196]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2.4" fill={robot} />)}
+
+      {/* the seam where the two halves meet */}
+      <path d="M150,40 L150,262" stroke="var(--color-ink-muted)" strokeWidth="1" strokeDasharray="3 4" strokeOpacity="0.7" />
+    </svg>
+  )
+}
+
 function AboutPage() {
   const timelineRef = useRef<HTMLElement>(null)
   const [timelineProgress, setTimelineProgress] = useState(0)
@@ -607,13 +991,20 @@ function AboutPage() {
 
   return (
     <main>
-      <PageIntro eyebrow="The person between" title="Humanities, meet technology." copy="I care about the space where different ways of thinking overlap, and what becomes possible there." />
+      <PageIntro eyebrow="The person between" title="Humanities, meet technology." copy="I care about the space where different ways of thinking overlap, and what becomes possible there." art={<HalfFace />} />
 
       <section className="px-6 py-20 sm:px-10 md:px-14 md:py-32">
         <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[0.7fr_1.3fr]">
-          <p className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-[var(--color-mauve-light)]">01 · About me</p>
           <div>
-            <p className="max-w-5xl font-display text-5xl leading-snug text-[var(--color-ink)] sm:text-5xl lg:text-6xl">Moving between stories and systems</p>
+            <p className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-[var(--color-mauve-light)]">01 · About me</p>
+            {/* stories (the book) written in systems (code): centred above the heading on phones,
+                filling the empty left column from tablet up */}
+            <div className="mx-auto mt-10 w-full max-w-[260px] px-4 sm:max-w-[300px] md:mx-0 md:mt-12 md:max-w-[340px] md:pl-0 md:pr-6">
+              <CodeBook />
+            </div>
+          </div>
+          <div>
+            <p className="max-w-5xl font-display text-5xl leading-snug text-[var(--color-ink)] sm:text-5xl lg:text-6xl">Moving between stories and systems.</p>
             <div className="mt-10 grid gap-6 text-m leading-7 text-[var(--color-ink-muted)] sm:grid-cols-2">
               <p>My roots are in literature and the arts. They taught me empathy, critical thinking, and how to deliver a well-shaped idea that gets somewhere.</p>
               <p>I took this in my stride and entered the world of technology, where I gained a new medium to turn ideas into real-world products, building with and for the people.</p>
@@ -625,10 +1016,20 @@ function AboutPage() {
       <section ref={timelineRef} className="border-t border-[color:var(--color-line)] px-6 py-20 sm:px-10 md:px-14 md:py-32">
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 grid gap-6 md:grid-cols-[0.7fr_1.3fr]">
-            <p className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-[var(--color-sage-light)]">02 · Education</p>
+            <div>
+              <p className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-[var(--color-sage-light)]">02 · Education</p>
+              {/* phones: cap sits centred between the label and the heading */}
+              <div className="mx-auto mt-10 w-full max-w-[240px] px-4 sm:max-w-[280px] md:hidden">
+                <GradCap />
+              </div>
+            </div>
             <h2 className="font-display text-4xl font-normal text-[var(--color-ink)] sm:text-6xl">My education journey.</h2>
           </div>
           <div className="relative md:ml-[29%]">
+            {/* tablet and up: cap fills the empty space to the left of the timeline */}
+            <div className="absolute right-full top-0 mr-[6%] hidden w-[38%] max-w-[300px] md:block">
+              <GradCap />
+            </div>
             <div className="absolute bottom-0 left-[5px] top-0 w-px bg-[var(--color-line)]">
               <div className="w-full origin-top bg-[var(--color-sage)]" style={{ height: `${timelineProgress * 100}%` }} />
             </div>
@@ -666,10 +1067,113 @@ function AboutPage() {
   )
 }
 
+/* ── Typewriter typing out a page, line by line (Writing page) ── */
+// each typed line: [width in px, colour]
+const TYPEWRITER_LINES: [number, string][] = [
+  [84, 'var(--color-mauve-light)'],
+  [66, 'var(--color-ink)'],
+  [90, 'var(--color-sage-light)'],
+  [52, 'var(--color-ink)'],
+]
+
+function Typewriter() {
+  const outline = 'var(--color-mauve-light)'
+  const fill = 'color-mix(in srgb, var(--color-surface) 4%, var(--color-canvas))'
+  const paperFill = 'color-mix(in srgb, var(--color-surface) 9%, var(--color-canvas))'
+  // the type bars strike at a fixed point; each line starts at the paper's left margin and the
+  // carriage (paper + platen) slides left as it types, so the text never runs off the page
+  const typeX = 166
+  const typeY = 96
+  const lineGap = 14
+
+  // one shared timeline: type each line, return the carriage, feed the paper, pause, start a new sheet
+  const typeDur = 1.5
+  const returnDur = 0.35
+  const total = TYPEWRITER_LINES.length * (typeDur + returnDur) + 2.2
+  const pct = (t: number) => `${((t / total) * 100).toFixed(2)}%`
+
+  let carriage = `0% { transform: translate(0px, 0px) }`
+  TYPEWRITER_LINES.forEach(([w], i) => {
+    const start = i * (typeDur + returnDur)
+    carriage += ` ${pct(start)} { transform: translate(0px, ${-i * lineGap}px) }`
+    carriage += ` ${pct(start + typeDur)} { transform: translate(${-w}px, ${-i * lineGap}px) }`
+    carriage += ` ${pct(start + typeDur + returnDur)} { transform: translate(0px, ${-(i + 1) * lineGap}px) }`
+  })
+  carriage += ` 100% { transform: translate(0px, ${-TYPEWRITER_LINES.length * lineGap}px) }`
+  const lineKeyframes = TYPEWRITER_LINES.map((_, i) => {
+    const start = i * (typeDur + returnDur)
+    return `@keyframes tw-line-${i} { 0%, ${pct(start)} { transform: scaleX(0) } ${pct(start + typeDur)}, 100% { transform: scaleX(1) } }`
+  }).join('\n')
+
+  const keyRows = [
+    { y: 178, count: 10, x0: 92, gap: 20 },
+    { y: 196, count: 9, x0: 102, gap: 20 },
+    { y: 214, count: 8, x0: 112, gap: 20 },
+  ]
+  const pressing = new Set(['0-3', '1-6', '2-2', '0-7', '1-1'])
+
+  return (
+    <svg viewBox="0 -40 360 300" fill="none" xmlns="http://www.w3.org/2000/svg"
+      role="img" aria-label="A typewriter typing out a page"
+      style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+      <style>{`
+        @keyframes tw-carriage { ${carriage} }
+        ${lineKeyframes}
+        @keyframes tw-press { 0%, 60%, 100% { transform: translateY(0) } 75% { transform: translateY(2px) } }
+      `}</style>
+
+      {/* carriage: paper and platen move together */}
+      <g style={{ animation: `tw-carriage ${total}s linear infinite` }}>
+        {/* paper, fed up through the platen */}
+        <path d={`M${typeX - 14},${typeY - 60} L${typeX + 106},${typeY - 60} L${typeX + 106},${typeY + 60} L${typeX - 14},${typeY + 60} Z`} fill={paperFill} stroke="var(--color-ink-muted)" strokeWidth="1.1" />
+        {TYPEWRITER_LINES.map(([w, color], i) => (
+          <rect key={i} x={typeX} y={typeY - 3 + i * lineGap} width={w} height={3.6} rx={1.8}
+            fill={color} fillOpacity={color === 'var(--color-ink)' ? 0.75 : 0.9}
+            style={{ transformBox: 'fill-box', transformOrigin: 'left center', animation: `tw-line-${i} ${total}s linear infinite` }} />
+        ))}
+        {/* platen (roller) and knobs */}
+        <rect x="86" y={typeY + 10} width="248" height="20" rx="10" fill={fill} stroke={outline} strokeWidth="1.5" />
+        {[110, 140, 280, 310].map(x => <line key={x} x1={x} y1={typeY + 12} x2={x} y2={typeY + 28} stroke={outline} strokeWidth="0.7" strokeOpacity="0.4" />)}
+        <circle cx="78" cy={typeY + 20} r="11" fill={fill} stroke={outline} strokeWidth="1.5" />
+        <circle cx="342" cy={typeY + 20} r="11" fill={fill} stroke={outline} strokeWidth="1.5" />
+        <circle cx="78" cy={typeY + 20} r="4" stroke={outline} strokeWidth="1" />
+        <circle cx="342" cy={typeY + 20} r="4" stroke={outline} strokeWidth="1" />
+        {/* carriage-return lever */}
+        <path d={`M92,${typeY + 8} L74,${typeY - 14} L56,${typeY - 18}`} stroke="var(--color-sage)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+
+      {/* body */}
+      <path d="M60,134 L300,134 L330,240 L30,240 Z" fill={fill} stroke={outline} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M72,142 L288,142" stroke={outline} strokeWidth="0.8" strokeOpacity="0.4" />
+      {/* type-bar basket, fanning up to the strike point */}
+      <path d="M150,136 Q180,166 210,136" stroke={outline} strokeWidth="1.1" />
+      {Array.from({ length: 9 }, (_, i) => {
+        const a = Math.PI * (0.15 + (i / 8) * 0.7)
+        return <line key={i} x1={180 - Math.cos(a) * 26} y1={150 - Math.sin(a) * 10} x2={180 - Math.cos(a) * 8} y2={140} stroke="var(--color-ink-muted)" strokeWidth="0.8" strokeOpacity="0.6" />
+      })}
+      {/* keys */}
+      {keyRows.map((row, r) =>
+        Array.from({ length: row.count }, (_, k) => {
+          const id = `${r}-${k}`
+          const press = pressing.has(id)
+          return (
+            <g key={id} style={press ? { animation: `tw-press 0.9s ease-in-out ${(r * 0.37 + k * 0.21) % 0.9}s infinite` } : undefined}>
+              <circle cx={row.x0 + k * row.gap} cy={row.y} r="6.5" fill="var(--color-canvas)"
+                stroke={press ? 'var(--color-sage-light)' : 'var(--color-ink-muted)'} strokeWidth="1.1" />
+            </g>
+          )
+        })
+      )}
+      {/* space bar */}
+      <rect x="130" y="226" width="100" height="7" rx="3.5" fill="var(--color-canvas)" stroke="var(--color-ink-muted)" strokeWidth="1.1" />
+    </svg>
+  )
+}
+
 function WritingPage() {
   return (
     <main>
-      <PageIntro eyebrow="Notes in progress" title="Writing, soon." copy="Short observations on technology, culture, and the useful space between them." />
+      <PageIntro eyebrow="Notes in progress" title="Writing, soon." copy="Short observations on technology, culture, and the useful space between them." art={<Typewriter />} />
       <div className="mx-auto min-h-[35vh] max-w-6xl px-6 sm:px-10 md:px-14">
         <div className="border-t border-[color:var(--color-line)] py-10 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">The first dispatch is taking shape.</div>
       </div>
