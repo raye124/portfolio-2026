@@ -1023,7 +1023,7 @@ function AboutPage() {
                 <GradCap />
               </div>
             </div>
-            <h2 className="font-display text-4xl font-normal text-[var(--color-ink)] sm:text-6xl">My education journey.</h2>
+            <h2 className="font-display text-5xl font-normal leading-snug text-[var(--color-ink)] sm:text-5xl lg:text-6xl">My education journey.</h2>
           </div>
           <div className="relative md:ml-[29%]">
             {/* tablet and up: cap fills the empty space to the left of the timeline */}
